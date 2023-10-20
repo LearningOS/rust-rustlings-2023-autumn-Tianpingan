@@ -1,8 +1,8 @@
 // from_into.rs
 //
-// The From trait is used for value-to-value conversions. If From is implemented
-// correctly for a type, the Into trait should work conversely. You can read
-// more about it at https://doc.rust-lang.org/std/convert/trait.From.html
+//From 特征用于值到值的转换。如果某个类型正确实现了 From，
+//Into 特征应该相反地工作。您可以在 https://doc.rust-lang.org/std/convert/trait.From.html 阅读更多相关信息
+//
 //
 // Execute `rustlings hint from_into` or use the `hint` watch subcommand for a
 // hint.
@@ -13,8 +13,8 @@ struct Person {
     age: usize,
 }
 
-// We implement the Default trait to use it as a fallback
-// when the provided string is not convertible into a Person object
+//我们实现了 Default 特征，以便在提供的字符串无法转换为 Person 对象时将其用作后备
+// 
 impl Default for Person {
     fn default() -> Person {
         Person {
@@ -24,26 +24,31 @@ impl Default for Person {
     }
 }
 
-// Your task is to complete this implementation in order for the line `let p =
-// Person::from("Mark,20")` to compile Please note that you'll need to parse the
-// age component into a `usize` with something like `"4".parse::<usize>()`. The
-// outcome of this needs to be handled appropriately.
+//您的任务是完成此实现，以便编译 `let p = Person::from("Mark,20")` 行请注意，您需要使用以下命令将年龄组件解析为 `usize`类似于“4”.parse::<usize>()`。
+//需要适当处理此结果。
 //
-// Steps:
-// 1. If the length of the provided string is 0, then return the default of
-//    Person.
-// 2. Split the given string on the commas present in it.
-// 3. Extract the first element from the split operation and use it as the name.
-// 4. If the name is empty, then return the default of Person.
-// 5. Extract the other element from the split operation and parse it into a
-//    `usize` as the age.
-// If while parsing the age, something goes wrong, then return the default of
-// Person Otherwise, then return an instantiated Person object with the results
+//
+//
+//脚步：
+//1. 如果提供的字符串长度为0，则返回默认的Person。
+//2. 用逗号分割给定的字符串。
+//3. 从 split 操作中提取第一个元素并将其用作名称。
+//4. 如果名称为空，则返回默认的Person。
+//5. 从 split 操作中提取另一个元素并将其解析为 `usize` 作为年龄。
+//
+//如果在解析年龄时出现问题，则返回默认的 Person 否则，则返回一个实例化的 Person 对象以及结果
+// 
 
-// I AM NOT DONE
+
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        let parts: Vec<&str> = s.split(",").collect();
+        if parts.len()==2 && parts[0] != "" && parts[1] != "" && parts[0].chars().all(char::is_alphabetic) && parts[1].chars().all(char::is_numeric) {
+            Person {name: parts[0].to_string(), age: parts[1].parse::<usize>().unwrap()}
+        } else {
+            Person::default()
+        }
     }
 }
 

@@ -21,26 +21,30 @@ struct Color {
 // We will use this error type for these `TryFrom` conversions.
 #[derive(Debug, PartialEq)]
 enum IntoColorError {
-    // Incorrect length of slice
+   //切片长度不正确
     BadLen,
-    // Integer conversion error
+   //整数转换错误
     IntConversion,
 }
 
-// I AM NOT DONE
 
-// Your task is to complete this implementation and return an Ok result of inner
-// type Color. You need to create an implementation for a tuple of three
-// integers, an array of three integers, and a slice of integers.
+//你的任务是完成这个实现并返回内部类型 Color 的 Ok 结果。
+//您需要为三个整数的元组创建一个实现，
+//一个由三个整数组成的数组和一个整数切片。
 //
-// Note that the implementation for tuple and array will be checked at compile
-// time, but the slice implementation needs to check the slice length! Also note
-// that correct RGB color values must be integers in the 0..=255 range.
+//请注意，元组和数组的实现将在编译时检查，
+//但是切片实现需要检查切片长度！
+//另请注意，正确的 RGB 颜色值必须是 0..=255 范围内的整数。
 
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        if [tuple.0, tuple.1, tuple.2].iter().all(|&x| x<=255 && x>=0) {
+            Ok(Color{red: tuple.0 as u8, green: tuple.1 as u8, blue: tuple.2 as u8})
+        } else {
+            Err(IntoColorError::IntConversion)
+        }
     }
 }
 
@@ -48,6 +52,11 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        if arr.iter().all(|&x| x<=255 && x>=0) {
+            Ok(Color{red: arr[0] as u8, green: arr[1] as u8, blue: arr[2] as u8})
+        } else {
+            Err(IntoColorError::IntConversion)
+        }
     }
 }
 
@@ -55,6 +64,13 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+            Err(IntoColorError::BadLen)
+        } else if slice.iter().all(|&x| x<=255 && x>=0) {
+            Ok(Color{red: slice[0] as u8, green: slice[1] as u8, blue: slice[2] as u8})
+        } else {
+            Err(IntoColorError::IntConversion)
+        }
     }
 }
 
